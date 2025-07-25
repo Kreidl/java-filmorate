@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    @Getter
     private final Map<Integer, User> users = new HashMap<>();
 
     @GetMapping

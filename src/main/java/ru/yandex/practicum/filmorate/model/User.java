@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Data
 public class User {
-    @NonNull
     private int id;
 
     @NonNull
