@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -33,7 +32,7 @@ void createUserWithIncorrectEmailTest() {
     User user = new User("example.ex@ru", "Пользователь1", LocalDate.of(2000,10,10));
     user.setName("Пользователь");
     assertThrows(ValidationException.class, () -> {
-        User user1 = userController.create(user);
+        userController.create(user);
     });
     assertEquals(new HashMap<>(), userController.getUsers(), "Пользователь не должен быть добавлен в список пользователей");
 }
@@ -45,7 +44,7 @@ void createUserWithDuplicateEmailTest() {
     userController.create(user);
     User user1 = new User("example@ex.ru", "Пользователь1", LocalDate.of(1997,10,10));
     assertThrows(ValidationException.class, () -> {
-        User user2 = userController.create(user1);
+        userController.create(user1);
     });
     assertEquals(1, userController.getUsers().size(), "Пользователь с дублирующимся Email не должен быть добавлен в список пользователей");
 }
@@ -55,12 +54,12 @@ void createUserWithIncorrectLoginTest() {
     User user = new User("example@ex.ru", "", LocalDate.of(2000,10,10));
     user.setName("Пользователь");
     assertThrows(ValidationException.class, () -> {
-        User user1 = userController.create(user);
+        userController.create(user);
     });
     assertEquals(new HashMap<>(), userController.getUsers(), "Пользователь не должен быть добавлен в список пользователей");
     user.setLogin("П о льзователь");
     assertThrows(ValidationException.class, () -> {
-        User user1 = userController.create(user);
+        userController.create(user);
     });
     assertEquals(new HashMap<>(), userController.getUsers(), "Пользователь не должен быть добавлен в список пользователей");
 }
@@ -78,7 +77,7 @@ void createUserWithIncorrectBirthdayTest() {
     User user = new User("example@ex.ru", "Пользователь1", LocalDate.of(2026,10,10));
     user.setName("Пользователь");
     assertThrows(ValidationException.class, () -> {
-        User user1 = userController.create(user);
+        userController.create(user);
     });
     assertEquals(new HashMap<>(), userController.getUsers(), "Пользователь не должен быть добавлен в список пользователей");
 }
@@ -104,7 +103,7 @@ void updateUserWithIncorrectEmailTest() {
     updatedUser.setName(user.getName());
     updatedUser.setId(user.getId());
     assertThrows(ValidationException.class, () -> {
-        User user1 = userController.update(updatedUser);
+        userController.update(updatedUser);
     });
     assertNotEquals(updatedUser.getEmail(), user.getEmail(), "Email пользователя обновлён");
 }
@@ -118,12 +117,12 @@ void updateUserWithIncorrectLoginTest() {
     updatedUser.setName(user.getName());
     updatedUser.setId(user.getId());
     assertThrows(ValidationException.class, () -> {
-        User user1 = userController.update(updatedUser);
+        userController.update(updatedUser);
     });
     assertNotEquals(updatedUser.getLogin(), user.getLogin(), "Login пользователя обновлён");
     updatedUser.setLogin("П о льзователь1");
     assertThrows(ValidationException.class, () -> {
-        User user1 = userController.update(updatedUser);
+        userController.update(updatedUser);
     });
     assertNotEquals(updatedUser.getLogin(), user.getLogin(), "Login пользователя обновлён");
 }
@@ -148,7 +147,7 @@ void updateUserWithIncorrectBirthdayTest() {
     updatedUser.setName(user.getName());
     updatedUser.setId(user.getId());
     assertThrows(ValidationException.class, () -> {
-        User user1 = userController.update(updatedUser);
+        userController.update(updatedUser);
     });
     assertNotEquals(updatedUser.getBirthday(), user.getBirthday(), "Дата рождения пользователя обновлена");
 }

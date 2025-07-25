@@ -30,7 +30,7 @@ class FilmControllerTest {
     void createFilmWithoutNameTest() {
         Film film = new Film("", "Описание фильма 1", LocalDate.of(2000, 10, 10), 120);
         assertThrows(ValidationException.class, () -> {
-            Film film1 = filmController.create(film);
+            filmController.create(film);
         });
         assertEquals(new HashMap<>(), filmController.getFilms(), "Фильм не должен быть добавлен в список фильмов");
     }
@@ -42,7 +42,7 @@ class FilmControllerTest {
                 "ааааааааааааааааааааа ааааааааааааааааааааа аааааааааааааааааааааааа ааааааааааааааааааааааааа ааа",
                 LocalDate.of(2000, 10, 10), 120);
         assertThrows(ValidationException.class, () -> {
-            Film film1 = filmController.create(film);
+            filmController.create(film);
         });
         assertEquals(new HashMap<>(), filmController.getFilms(), "Фильм не должен быть добавлен в список фильмов");
     }
@@ -51,7 +51,7 @@ class FilmControllerTest {
     void createFilmWithIncorrectDateReleaseTest() {
         Film film = new Film("Фильм 1", "Описание фильма 1", LocalDate.of(1800, 10, 10), 120);
         assertThrows(ValidationException.class, () -> {
-            Film film1 = filmController.create(film);
+            filmController.create(film);
         });
         assertEquals(new HashMap<>(), filmController.getFilms(), "Фильм не должен быть добавлен в список фильмов");
     }
@@ -60,12 +60,12 @@ class FilmControllerTest {
     void createFilmWithIncorrectDurationTest() {
         Film film = new Film("Фильм 1", "Описание фильма 1", LocalDate.of(1800, 10, 10), -20);
         assertThrows(ValidationException.class, () -> {
-            Film film2 = filmController.create(film);
+            filmController.create(film);
         });
         assertEquals(new HashMap<>(), filmController.getFilms(), "Фильм не должен быть добавлен в список фильмов");
         Film film1 = new Film("Фильм 1", "Описание фильма 1", LocalDate.of(1800, 10, 10), 0);
         assertThrows(ValidationException.class, () -> {
-            Film film3 = filmController.create(film1);
+            filmController.create(film1);
         });
         assertEquals(new HashMap<>(), filmController.getFilms(), "Фильм не должен быть добавлен в список фильмов");
     }
@@ -88,7 +88,7 @@ class FilmControllerTest {
         Film updatedFilm = new Film("", "Обновлённое описание фильма 1", LocalDate.of(2000, 10, 10), 120);
         updatedFilm.setId(film.getId());
         assertThrows(ValidationException.class, () -> {
-            Film film1 = filmController.update(updatedFilm);
+            filmController.update(updatedFilm);
         });
         assertNotEquals(film.getName(), updatedFilm.getName(), "Имена фильмов одинаковые");
     }
@@ -103,7 +103,7 @@ class FilmControllerTest {
                 LocalDate.of(2000, 10, 10), 120);
         updatedFilm.setId(film.getId());
         assertThrows(ValidationException.class, () -> {
-            Film film1 = filmController.update(updatedFilm);
+            filmController.update(updatedFilm);
         });
         assertNotEquals(film.getDescription(), updatedFilm.getDescription(), "Описания фильмов одинаковые");
     }
@@ -115,7 +115,7 @@ class FilmControllerTest {
         Film updatedFilm = new Film("Фильм 1", "Описание фильма 1", LocalDate.of(1800, 10, 10), 120);
         updatedFilm.setId(film.getId());
         assertThrows(ValidationException.class, () -> {
-            Film film1 = filmController.update(updatedFilm);
+            filmController.update(updatedFilm);
         });
         assertNotEquals(film.getReleaseDate(), updatedFilm.getReleaseDate(), "Даты релиза фильмов одинаковые");
     }
@@ -127,7 +127,7 @@ class FilmControllerTest {
         Film updatedFilm = new Film("Фильм 1", "Описание фильма 1", film.getReleaseDate(), -20);
         updatedFilm.setId(film.getId());
         assertThrows(ValidationException.class, () -> {
-            Film film2 = filmController.update(updatedFilm);
+            filmController.update(updatedFilm);
         });
         assertNotEquals(film.getDuration(), updatedFilm.getDuration(), "Продолжительности фильмов одинаковые");
     }

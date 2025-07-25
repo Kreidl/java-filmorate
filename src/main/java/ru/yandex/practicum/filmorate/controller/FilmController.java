@@ -87,21 +87,21 @@ public class FilmController {
     }
 
     private void filmDescriptionValidation(String description) {
-        int MAX_DESCRIPTION_FILM_LENGTH = 200;
-        if (description.length() > MAX_DESCRIPTION_FILM_LENGTH) {
+        int maxDescriptionFilmLength = 200;
+        if (description.length() > maxDescriptionFilmLength) {
             log.error("Пользователь ввёл некорректное описание фильма - длина не может быть {} символов.",
                     description.length());
             throw new ValidationException("Длина описания фильма не должна превышать "
-                    + MAX_DESCRIPTION_FILM_LENGTH + " символов.");
+                    + maxDescriptionFilmLength + " символов.");
         }
     }
 
     private void filmDateReleaseValidation(LocalDate dateRelease) {
-        LocalDate EARLY_DATE_RELEASE = LocalDate.of(1895, Month.DECEMBER, 28);
-        if (dateRelease.isBefore(EARLY_DATE_RELEASE)) {
+        LocalDate earlyDateRelease = LocalDate.of(1895, Month.DECEMBER, 28);
+        if (dateRelease.isBefore(earlyDateRelease)) {
             log.error("Пользователь ввёл некорректную дату релиза фильма.");
-            throw new ValidationException("Дата релиза не раньше " + EARLY_DATE_RELEASE.getDayOfMonth()
-                    + " " + EARLY_DATE_RELEASE.getMonth() + " " + EARLY_DATE_RELEASE.getYear() + " года.");
+            throw new ValidationException("Дата релиза не раньше " + earlyDateRelease.getDayOfMonth()
+                    + " " + earlyDateRelease.getMonth() + " " + earlyDateRelease.getYear() + " года.");
         }
     }
 }
