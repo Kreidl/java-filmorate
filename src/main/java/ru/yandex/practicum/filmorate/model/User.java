@@ -16,14 +16,15 @@ public class User {
 
     @NonNull
     @NotNull(message = "Email пользователя не может быть пустым.")
-    @NotBlank
+    @NotBlank(message = "Email пользователя не может быть пустым.")
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Пользователь ввёл некорректный Email.")
     @Valid
     private String email;
 
     @NonNull
     @NotNull(message = "Логин пользователя не может быть пустым.")
-    @NotBlank
+    @NotBlank(message = "Логин пользователя не может содержать пробелы или быть пустым.")
+    @Pattern(regexp = "\\S+", message = "Логин пользователя не может содержать пробелы или быть пустым.")
     @Valid
     private String login;
 
@@ -31,7 +32,7 @@ public class User {
 
     @NonNull
     @NotNull(message = "Дата рождения пользователя не может быть пустой.")
-    @Past
+    @Past(message = "Дата рождения не может быть в будущем.")
     @Valid
     private LocalDate birthday;
 }

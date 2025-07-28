@@ -30,6 +30,6 @@ public class Film {
 
     @NonNull
     @NotNull(message = "Продолжительность фильма не может быть пустой.")
-    @Positive(message = "Продолжительность фильма не может быть отрицательной.")
+    @Positive(message = "Продолжительность фильма не может быть нулевой или отрицательной.")
     private int duration;
 }
