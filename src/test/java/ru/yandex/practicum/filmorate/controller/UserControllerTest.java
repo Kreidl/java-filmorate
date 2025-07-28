@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -123,6 +124,17 @@ class UserControllerTest {
         updatedUser.setId(user.getId());
         userController.update(updatedUser);
         assertEquals(updatedUser.getLogin(), user.getName(), "Имя пользователя не обновлено");
+    }
+
+    @Test
+    @DisplayName("Проверка обновления несуществующего пользователя")
+    void updateUserWithNonExistentIdTest() {
+        User updatedUser = new User("example@ex.ru", "ОбновлённыйПользователь1", LocalDate.of(2000,10,10));
+        updatedUser.setId(3);
+        assertThrows(NotFoundException.class, () -> {
+            userController.update(updatedUser);
+        });
+        assertEquals(0, userController.getUsers().size(), "Пользователь не должен быть добавлен в список пользователей");
     }
 
     @Test
