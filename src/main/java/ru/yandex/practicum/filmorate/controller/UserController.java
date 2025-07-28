@@ -1,22 +1,23 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
+@Validated
 public class UserController {
     @Getter
     private final Map<Integer, User> users = new HashMap<>();
@@ -28,11 +29,9 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@RequestBody User user) {
+    public User create(@Valid @RequestBody User user) {
         log.info("Запрос на добавление нового пользователя.");
         userEmailValidation(user);
-        userLoginValidation(user.getLogin());
-        userBirthdayValidation(user.getBirthday());
         userNameValidation(user);
         user.setId(getNextId());
         users.put(user.getId(), user);
@@ -41,7 +40,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User update(@RequestBody User updatedUser) {
+    public User update(@Valid @RequestBody User updatedUser) {
         log.info("Запрос на обновление данных пользователя.");
         if (updatedUser.getId() < 1) {
             log.error("Пользователь ввёл некорректный Id.");
@@ -49,8 +48,6 @@ public class UserController {
         }
         if (users.containsKey(updatedUser.getId())) {
             userEmailValidation(updatedUser);
-            userLoginValidation(updatedUser.getLogin());
-            userBirthdayValidation(updatedUser.getBirthday());
             userNameValidation(updatedUser);
             User oldUser = users.get(updatedUser.getId());
             oldUser.setName(updatedUser.getName());
@@ -74,16 +71,6 @@ public class UserController {
     }
 
     private void userEmailValidation(User user) {
-        if (user.getEmail().isEmpty() || user.getEmail().isBlank()) {
-            log.error("Пользователь ввёл пустой Email.");
-            throw new ValidationException("Email не может быть пустым.");
-        }
-        final String EMAIL_REGEX =
-                "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-        if (!Pattern.matches(EMAIL_REGEX, user.getEmail())) {
-            log.error("Пользователь ввёл некорректный Email.");
-            throw new ValidationException("Указан некорректный Email.");
-        }
         Optional<User> userOpt = users.values().stream()
                 .filter(user1 -> user1.getEmail().equals(user.getEmail()))
                 .findFirst();
@@ -93,28 +80,10 @@ public class UserController {
         }
     }
 
-    private void userLoginValidation(String login) {
-        if (login.isEmpty() || login.isBlank()) {
-            log.error("Пользователь ввёл пустой логин.");
-            throw new ValidationException("Логин не может быть пустым.");
-        }
-        if (login.contains(" ")) {
-            log.error("Пользователь ввёл логин, содержащий пробелы.");
-            throw new ValidationException("Логин не может содержать пробелы.");
-        }
-    }
-
     private void userNameValidation(User user) {
         if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.info("Пользователь ввёл пустое имя, его именем установлен логин.");
-        }
-    }
-
-    private void userBirthdayValidation(LocalDate birthday) {
-        if (birthday.isAfter(LocalDate.now())) {
-            log.error("Пользователь ввёл дату рождения из будущего.");
-            throw new ValidationException("Дата рождения не может быть в будущем.");
         }
     }
 }

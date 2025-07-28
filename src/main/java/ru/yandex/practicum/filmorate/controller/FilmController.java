@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +28,8 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@RequestBody Film film) {
+    public Film create(@Valid @RequestBody Film film) {
         log.info("Запрос на добавление нового фильма.");
-        filmNameValidation(film.getName());
-        filmDurationValidation(film.getDuration());
-        filmDescriptionValidation(film.getDescription());
         filmDateReleaseValidation(film.getReleaseDate());
         film.setId(getNextId());
         films.put(film.getId(), film);
@@ -40,16 +38,13 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film update(@RequestBody Film updatedFilm) {
+    public Film update(@Valid @RequestBody Film updatedFilm) {
         log.info("Запрос на обновление данных фильма.");
         if (updatedFilm.getId() < 1) {
             log.error("Пользователь ввёл некорректный Id.");
             throw new ValidationException("Указан некорректный Id.");
         }
         if (films.containsKey(updatedFilm.getId())) {
-            filmNameValidation(updatedFilm.getName());
-            filmDurationValidation(updatedFilm.getDuration());
-            filmDescriptionValidation(updatedFilm.getDescription());
             filmDateReleaseValidation(updatedFilm.getReleaseDate());
             Film oldFilm = films.get(updatedFilm.getId());
             oldFilm.setName(updatedFilm.getName());
@@ -70,30 +65,6 @@ public class FilmController {
                 .max()
                 .orElse(0);
         return ++currentMaxId;
-    }
-
-    private void filmNameValidation(String name) {
-        if (name.isEmpty() || name.isBlank()) {
-            log.error("Пользователь ввёл пустое название фильма.");
-            throw new ValidationException("Название фильма не может быть пустым.");
-        }
-    }
-
-    private void filmDurationValidation(int duration) {
-        if (duration < 1) {
-            log.error("Пользователь ввёл отрицательную или пустую продолжительность фильма.");
-            throw new ValidationException("Продолжительность фильма не может быть отрицательной или нулевой.");
-        }
-    }
-
-    private void filmDescriptionValidation(String description) {
-        int maxDescriptionFilmLength = 200;
-        if (description.length() > maxDescriptionFilmLength) {
-            log.error("Пользователь ввёл некорректное описание фильма - длина не может быть {} символов.",
-                    description.length());
-            throw new ValidationException("Длина описания фильма не должна превышать "
-                    + maxDescriptionFilmLength + " символов.");
-        }
     }
 
     private void filmDateReleaseValidation(LocalDate dateRelease) {
