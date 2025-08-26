@@ -213,4 +213,25 @@ class UserControllerTest {
         users.put(2, user2);
         assertEquals(users.values().toString(), userController.findAll().toString(), "Список пользователей некорректный");
     }
+
+    @Test
+    @DisplayName("Проверка добавления пользователей в друзья")
+    void addFriendsTest() {
+        User user1 = User.builder()
+                .email("example@ex.ru")
+                .login("Пользователь1")
+                .birthday(LocalDate.of(2000, 10, 10))
+                .name("Пользователь1")
+                .build();
+        User user2 = User.builder()
+                .email("example2@ex.ru")
+                .login("Пользователь2")
+                .birthday(LocalDate.of(2002, 10, 10))
+                .name("Пользователь2")
+                .build();
+        userController.create(user1);
+        userController.create(user2);
+        userController.addFriend(user1.getId(), user2.getId());
+        assertEquals(1, user1.getFriends().size(), "Пользователи не добавлены в друзья");
+    }
 }

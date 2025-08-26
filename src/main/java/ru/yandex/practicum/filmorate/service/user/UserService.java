@@ -28,7 +28,7 @@ public class UserService {
 
     public User create(@Valid User user) {
         if (user.getFriends() == null) {
-            user.setFriends(Set.of());
+            user.setFriends(new HashSet<>());
         }
         return userStorage.create(user);
     }
@@ -49,7 +49,7 @@ public class UserService {
         System.out.println("Список пользователей " + getAllUsers());
         validateId(userId);
         validateId(newFriendId);
-        if (!getUserById(userId).getFriends().contains(newFriendId)) {
+        if (!getUserById(userId).getFriends().contains(newFriendId) || getUserById(userId).getFriends().isEmpty()) {
             getUserById(userId).getFriends().add(newFriendId);
             getUserById(newFriendId).getFriends().add(userId);
             log.info("У пользователя с id={} друг с id={} успешно добавлен.", userId, newFriendId);
