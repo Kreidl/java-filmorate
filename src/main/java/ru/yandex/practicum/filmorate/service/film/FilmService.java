@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service.film;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,7 +67,7 @@ public class FilmService {
         }
         if (getFilmById(filmId).getLikes().contains(userId)) {
             log.warn("Лайк от пользователя с id={} фильму с id={} уже поставлен.", userId, filmId);
-            throw new DuplicateException("Лайк от пользователя с id=" + userId + " фильму с id=" + filmId +" уже поставлен.");
+            throw new DuplicateException("Лайк от пользователя с id=" + userId + " фильму с id=" + filmId + " уже поставлен.");
         } else {
             getFilmById(filmId).getLikes().add(userId);
             log.info("Лайк от пользователя с id={} фильму с id={} поставлен.", userId, filmId);
