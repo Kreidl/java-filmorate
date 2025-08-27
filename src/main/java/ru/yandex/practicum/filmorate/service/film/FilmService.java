@@ -30,14 +30,14 @@ public class FilmService {
         this.userStorage = userStorage;
     }
 
-    public Film create(@Valid Film film) {
+    public Film create(Film film) {
         if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
         }
         return filmStorage.create(film);
     }
 
-    public Film update(@Valid Film updatedFilm) {
+    public Film update(Film updatedFilm) {
         if (updatedFilm.getLikes() == null) {
             updatedFilm.setLikes(new HashSet<>());
         }

@@ -16,11 +16,9 @@ import java.util.Set;
 public class Film {
     private long id;
 
-    @NotNull(message = "Название фильма не может быть пустым.")
     @NotBlank(message = "Название фильма не может быть пустым.")
     private String name;
 
-    @NotNull(message = "Описание фильма не может быть пустым.")
     @NotBlank(message = "Описание фильма не может быть пустым.")
     @Size(min = 1, max = 200, message = "Описание фильма должно быть от 1 до 200 символов.")
     private String description;

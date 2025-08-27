@@ -26,14 +26,14 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User create(@Valid User user) {
+    public User create(User user) {
         if (user.getFriends() == null) {
             user.setFriends(new HashSet<>());
         }
         return userStorage.create(user);
     }
 
-    public User update(@Valid User updatedUser) {
+    public User update(User updatedUser) {
         return userStorage.update(updatedUser);
     }
 

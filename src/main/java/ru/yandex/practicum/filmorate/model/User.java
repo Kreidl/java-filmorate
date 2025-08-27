@@ -16,13 +16,11 @@ import java.util.Set;
 public class User {
     private long id;
 
-    @NotNull(message = "Email пользователя не может быть пустым.")
     @NotBlank(message = "Email пользователя не может быть пустым.")
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Пользователь ввёл некорректный Email.")
     @Valid
     private String email;
 
-    @NotNull(message = "Логин пользователя не может быть пустым.")
     @NotBlank(message = "Логин пользователя не может содержать пробелы или быть пустым.")
     @Pattern(regexp = "\\S+", message = "Логин пользователя не может содержать пробелы или быть пустым.")
     @Valid
@@ -30,7 +28,6 @@ public class User {
 
     private String name;
 
-    @NotNull(message = "Дата рождения пользователя не может быть пустой.")
     @Past(message = "Дата рождения не может быть в будущем.")
     @Valid
     private LocalDate birthday;

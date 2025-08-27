@@ -5,13 +5,13 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collection;
 
 public interface UserStorage {
-    public User create(User user);
+    User create(User user);
 
-    public User update(User updatedUser);
+    User update(User updatedUser);
 
-    public void delete(User user);
+    void delete(User user);
 
-    public Collection<User> getAllUsers();
+    Collection<User> getAllUsers();
 
-    public User getUserById(long id);
+    User getUserById(long id);
 }
