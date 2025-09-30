@@ -16,10 +16,10 @@
 Содержит id жанров для каждого фильма:
 * id - id связи (тип bigint).
 * film_id - id фильма (тип bigint).
-* genre_id - id жанра (тип bigint).
+* genre_id - id жанра (тип integer).
 #### genres
 Содержит данные о жанрах:
-* genre_id - id жанра (тип bigint).
+* genre_id - id жанра (тип integer).
 * name - название жанра (тип varchar).
 #### mpa_ratings
 Содержит данные рейтингов по стандарту MPA:
@@ -45,7 +45,7 @@
 * status_id - id статуса  дружбы (тип integer).
 #### friendships_status
 Содержит данные о статусе дружбы:
-* status_id - id статуса дружбы (тип bigint).
+* status_id - id статуса дружбы (тип integer).
 * name - название статуса дружбы (тип varchar).
 ### Примеры запросов
 * Получить данные о всех фильмах:
