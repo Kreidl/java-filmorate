@@ -8,13 +8,12 @@
 Содержит данные о фильмах:
 * film_id - id фильма (тип bigint).
 * name - название фильма (тип varchar).
-* description - описание фильма (тип text с ограничением 200 символов). 
+* description - описание фильма (тип varchar с ограничением 200 символов). 
 * release_date - дата выхода фильма (тип date). 
 * duration - длительность фильма (тип integer). 
 * rating_id - id рейтинга фильма (тип integer).
 #### film_genres
 Содержит id жанров для каждого фильма:
-* id - id связи (тип bigint).
 * film_id - id фильма (тип bigint).
 * genre_id - id жанра (тип integer).
 #### genres
@@ -27,7 +26,6 @@
 * name - название MPA-рейтинга (тип varchar).
 #### film_likes
 Содержит id пользователей, которым понравился фильм:
-* id - id связи (тип bigint).
 * film_id - id фильма (тип bigint).
 * user_id - id пользователя, которому понравился фильм (тип bigint).
 #### users
@@ -39,14 +37,8 @@
 * birthday - день рождения пользователя (тип date).
 #### friendships
 Содержит данные о дружбе пользователей:
-* id - id связи (тип bigint).
 * user_id - id пользователя (тип bigint).
 * friend_user_id - id друга (тип bigint).
-* status_id - id статуса  дружбы (тип integer).
-#### friendships_status
-Содержит данные о статусе дружбы:
-* status_id - id статуса дружбы (тип integer).
-* name - название статуса дружбы (тип varchar).
 ### Примеры запросов
 * Получить данные о всех фильмах:
 ```
