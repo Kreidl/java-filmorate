@@ -5,8 +5,7 @@ CREATE TABLE IF NOT EXISTS genres (
 
 CREATE TABLE IF NOT EXISTS mpa_ratings (
     mpa_id INTEGER PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    description VARCHAR(100)
+    name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS films (
@@ -35,11 +34,10 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS friendships (
     user_id BIGINT REFERENCES users (user_id) ON DELETE CASCADE,
     friend_id BIGINT REFERENCES users (user_id) ON DELETE CASCADE,
-    confirmed BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (user_id, friend_id)
 );
 
-CREATE TABLE IF NOT EXISTS likes (
+CREATE TABLE IF NOT EXISTS film_likes (
     film_id BIGINT REFERENCES films (film_id) ON DELETE CASCADE,
     user_id BIGINT REFERENCES users (user_id) ON DELETE CASCADE,
     PRIMARY KEY (film_id, user_id)
