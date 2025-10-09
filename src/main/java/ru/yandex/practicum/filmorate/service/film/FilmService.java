@@ -73,13 +73,13 @@ public class FilmService {
         }
         if (!filmStorage.isContains(request.getId())) {
             log.error("Фильм с id = {} не найден.", request.getId());
-            throw new NotFoundException("Фильм с id = " + request.getId() +" не найден.");
+            throw new NotFoundException("Фильм с id = " + request.getId() + " не найден.");
         }
         Film updatedFilm = filmStorage.getFilmById(request.getId())
                 .map(film -> FilmMapper.updateFilmFields(film, request))
                 .orElseThrow(() -> {
                     log.error("Фильм с id = {} не найден.", request.getId());
-                    return new NotFoundException("Фильм с id = " + request.getId() +" не найден.");
+                    return new NotFoundException("Фильм с id = " + request.getId() + " не найден.");
                 });
         FilmDto filmDto = filmStorage.updateFilm(updatedFilm);
         log.info("Фильм {} обновлён.", updatedFilm);
@@ -90,7 +90,7 @@ public class FilmService {
         log.debug("Начало удаления фильма с id {}.", id);
         Optional<Film> film = filmStorage.getFilmById(id);
         if (film == null) {
-            throw new NotFoundException("Фильм с id = " + id + "не найден.");
+            throw new NotFoundException("Фильм с id = " + id + " не найден.");
         }
         filmStorage.deleteFilm(id);
         log.info("Фильм с id {} удалён.", id);
@@ -102,7 +102,7 @@ public class FilmService {
                 .map(FilmMapper::mapToFilmDto)
                 .orElseThrow(() -> {
                     log.error("Фильм с id = {} не найден.", filmId);
-                    return new NotFoundException("Фильм с id = " + filmId +" не найден.");
+                    return new NotFoundException("Фильм с id = " + filmId + " не найден.");
                 });
     }
 
