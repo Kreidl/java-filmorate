@@ -1,0 +1,26 @@
+package ru.yandex.practicum.filmorate.storage.mapper;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.User;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+@Slf4j
+@Component
+public class UserRowMapper implements RowMapper<User> {
+    @Override
+    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+        log.debug("Получаем данные из таблицы для объекта User");
+        User user = new User();
+        user.setId(rs.getLong("user_id"));
+        user.setEmail(rs.getString("email"));
+        user.setLogin(rs.getString("login"));
+        user.setName(rs.getString("name"));
+        user.setBirthday(rs.getDate("birthday").toLocalDate());
+        log.debug("Данные из таблицы для объекта Film преобразованы в объект User");
+        return user;
+    }
+}
