@@ -43,7 +43,6 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     private static final String FIND_ALL_LIKES_QUERY = "SELECT user_id FROM film_likes WHERE film_id = ? " +
             "ORDER BY user_id";
 
-
     public FilmDbStorage(JdbcTemplate jdbc) {
         super(jdbc, new FilmRowMapper());
     }
