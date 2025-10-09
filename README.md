@@ -11,7 +11,7 @@
 * description - описание фильма (тип varchar с ограничением 200 символов). 
 * release_date - дата выхода фильма (тип date). 
 * duration - длительность фильма (тип integer). 
-* rating_id - id рейтинга фильма (тип integer).
+* mpa_id - id рейтинга фильма (тип integer).
 #### film_genres
 Содержит id жанров для каждого фильма:
 * film_id - id фильма (тип bigint).
@@ -38,7 +38,7 @@
 #### friendships
 Содержит данные о дружбе пользователей:
 * user_id - id пользователя (тип bigint).
-* friend_user_id - id друга (тип bigint).
+* friend_id - id друга (тип bigint).
 ### Примеры запросов
 * Получить данные о всех фильмах:
 ```
