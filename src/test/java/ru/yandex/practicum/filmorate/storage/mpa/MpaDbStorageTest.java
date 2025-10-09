@@ -30,6 +30,7 @@ class MpaDbStorageTest {
                 .hasValueSatisfying(mpa -> assertThat(mpa)
                         .isEqualTo(mpaRatingById(2)));
     }
+
     @Test
     @DisplayName("Проверка получения всех Mpa-рейтингов")
     void getAllMpaRatingsTest() {

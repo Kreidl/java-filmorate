@@ -22,7 +22,6 @@ class GenreDbStorageTest {
     private final GenreDbStorage genreDbStorage;
 
     @Test
-
     void getGenreByIdTest() {
         Optional<Genre> genreOpt = genreDbStorage.getGenreById(2);
         assertThat(genreOpt).isPresent()
