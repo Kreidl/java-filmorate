@@ -18,8 +18,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.mapper.FilmMapper.mapToFilmDto;
+import static ru.yandex.practicum.filmorate.model.Genre.genreById;
 
 @Slf4j
 @Repository("filmDbStorage")
@@ -136,7 +138,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
                 if (filmIndex + 1 != filmsGenreId.getFilmId()) {
                     filmIndex = filmIndex + 1;
                 }
-                films.get(filmIndex).getGenres().add(Genre.genreById(filmsGenreId.getGenreId()));
+                films.get(filmIndex).getGenres().add(genreById(filmsGenreId.getGenreId()));
             }
         }
         log.trace("Список фильмов {}", films);
@@ -169,12 +171,12 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
                     return filmIdGenres;
                 }
             });
-            int filmIndex = 0;
-            for (FilmIdGenres filmsGenreId : filmsGenreIds) {
-                if (filmIndex + 1 != filmsGenreId.getFilmId()) {
-                    filmIndex = filmIndex + 1;
-                }
-                films.get(filmIndex).getGenres().add(Genre.genreById(filmsGenreId.getGenreId()));
+            for (Film film : films) {
+                Set<Genre> genres = filmsGenreIds.stream()
+                        .filter(filmsGenreId -> filmsGenreId.getFilmId() == film.getId())
+                        .map(filmIdGenres -> genreById(filmIdGenres.getGenreId()))
+                        .collect(Collectors.toSet());
+                film.setGenres(genres);
             }
         }
         return films;
