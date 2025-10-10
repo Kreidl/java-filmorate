@@ -119,7 +119,7 @@ public class UserDbStorage extends BaseStorage<User> implements UserStorage {
         if (commonFriends.isEmpty()) {
             return Collections.emptyList();
         }
-        return findMany(FIND_COMMON_FRIENDS_QUERY, userId, userId2);
+        return commonFriends;
     }
 
     public boolean isEmailIsUsed(String email) {

@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.FilmIdGenres;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.BaseStorage;
@@ -12,6 +14,7 @@ import ru.yandex.practicum.filmorate.storage.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.storage.mapper.GenreRowMapper;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -28,7 +31,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
             "duration = ?, mpa_id = ? WHERE film_id = ?";
     private static final String DELETE_QUERY = "DELETE FROM films WHERE film_id = ?";
     private static final String FIND_ALL_QUERY = "SELECT f.*, m.name AS mpa_rating FROM films f LEFT JOIN " +
-            "mpa_ratings m on f.mpa_id = m.mpa_id";
+            "mpa_ratings m ON f.mpa_id = m.mpa_id";
     private static final String FIND_BY_ID_QUERY = "SELECT f.*, m.name AS mpa_rating FROM films f " +
             "LEFT JOIN mpa_ratings m ON f.mpa_id = m.mpa_id WHERE f.film_id = ?";
     private static final String TOP_POPULAR_QUERY = "SELECT f.*, m.name AS mpa_rating FROM films f " +
@@ -38,6 +41,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     private static final String DELETE_GENRE_QUERY = "DELETE FROM film_genres WHERE film_id = ?";
     private static final String FIND_GENRES_QUERY = "SELECT * FROM genres AS g RIGHT JOIN (SELECT genre_id " +
             "FROM film_genres WHERE film_id = ?) AS f ON g.genre_id = f.genre_id ORDER BY genre_id";
+    private static final String FIND_ALL_FILMS_GENRES_QUERY = "SELECT * FROM film_genres ORDER BY film_id";
     private static final String INSERT_LIKE_QUERY = "INSERT INTO film_likes (film_id, user_id) VALUES (?, ?)";
     private static final String DELETE_LIKE_QUERY = "DELETE FROM film_likes WHERE film_id=? AND user_id=?";
     private static final String FIND_ALL_LIKES_QUERY = "SELECT user_id FROM film_likes WHERE film_id = ? " +
@@ -58,7 +62,20 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
                 film.getMpa().getId());
         film.setId(id);
         if (film.getGenres() != null) {
-            film.getGenres().forEach(genre -> jdbc.update(INSERT_GENRE_QUERY, id, genre.getId()));
+            List<Genre> genres = film.getGenres().stream().toList();
+            jdbc.batchUpdate(INSERT_GENRE_QUERY, new BatchPreparedStatementSetter() {
+
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    ps.setLong(1, film.getId());
+                    ps.setInt(2, genres.get(i).getId());
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return genres.size();
+                }
+            });
         }
         log.trace("Фильм {} создан", film);
         return mapToFilmDto(film);
@@ -75,8 +92,20 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
                 updatedFilm.getMpa().getId(),
                 updatedFilm.getId());
         delete(DELETE_GENRE_QUERY, updatedFilm.getId());
-        updatedFilm.getGenres().forEach(genre -> jdbc.update(INSERT_GENRE_QUERY,
-                updatedFilm.getId(), genre.getId()));
+        List<Genre> genres = updatedFilm.getGenres().stream().toList();
+        jdbc.batchUpdate(INSERT_GENRE_QUERY, new BatchPreparedStatementSetter() {
+
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setLong(1, updatedFilm.getId());
+                ps.setInt(2, genres.get(i).getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return genres.size();
+            }
+        });
         log.debug("Фильм с id {} обновлён.", updatedFilm.getId());
         return mapToFilmDto(getFilmById(updatedFilm.getId()).get());
     }
@@ -91,10 +120,24 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     @Override
     public Collection<Film> getAllFilms() {
         log.debug("Получение всех фильмов.");
-        Collection<Film> films = findMany(FIND_ALL_QUERY);
-        for (Film film : films) {
-            Collection<Genre> genres = new HashSet<>(jdbc.query(FIND_GENRES_QUERY, new GenreRowMapper(), film.getId()));
-            film.setGenres(new HashSet<>(genres));
+        List<Film> films = findMany(FIND_ALL_QUERY).stream().toList();
+        if (!films.isEmpty()) {
+            List<FilmIdGenres> filmsGenreIds = jdbc.query(FIND_ALL_FILMS_GENRES_QUERY, new RowMapper<FilmIdGenres>() {
+                @Override
+                public FilmIdGenres mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    FilmIdGenres filmIdGenres = new FilmIdGenres();
+                    filmIdGenres.setFilmId(rs.getLong("film_id"));
+                    filmIdGenres.setGenreId(rs.getInt("genre_id"));
+                    return filmIdGenres;
+                }
+            });
+            int filmIndex = 0;
+            for (FilmIdGenres filmsGenreId : filmsGenreIds) {
+                if (filmIndex + 1 != filmsGenreId.getFilmId()) {
+                    filmIndex = filmIndex + 1;
+                }
+                films.get(filmIndex).getGenres().add(Genre.genreById(filmsGenreId.getGenreId()));
+            }
         }
         log.trace("Список фильмов {}", films);
         return films;
@@ -116,9 +159,23 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     public List<Film> getTopPopularFilms(int count) {
         log.debug("Получение {} топ фильмов.", count);
         List<Film> films = findMany(TOP_POPULAR_QUERY, count);
-        for (Film film : films) {
-            Collection<Genre> genres = new HashSet<>(jdbc.query(FIND_GENRES_QUERY, new GenreRowMapper(), film.getId()));
-            film.setGenres(new HashSet<>(genres));
+        if (!films.isEmpty()) {
+            List<FilmIdGenres> filmsGenreIds = jdbc.query(FIND_ALL_FILMS_GENRES_QUERY, new RowMapper<FilmIdGenres>() {
+                @Override
+                public FilmIdGenres mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    FilmIdGenres filmIdGenres = new FilmIdGenres();
+                    filmIdGenres.setFilmId(rs.getLong("film_id"));
+                    filmIdGenres.setGenreId(rs.getInt("genre_id"));
+                    return filmIdGenres;
+                }
+            });
+            int filmIndex = 0;
+            for (FilmIdGenres filmsGenreId : filmsGenreIds) {
+                if (filmIndex + 1 != filmsGenreId.getFilmId()) {
+                    filmIndex = filmIndex + 1;
+                }
+                films.get(filmIndex).getGenres().add(Genre.genreById(filmsGenreId.getGenreId()));
+            }
         }
         return films;
     }
