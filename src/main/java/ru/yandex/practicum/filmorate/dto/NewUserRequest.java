@@ -1,23 +1,17 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class User {
-    private long id;
-
+public class NewUserRequest {
     @NotBlank(message = "Email пользователя не может быть пустым.")
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Пользователь ввёл некорректный Email.")
     @Valid
@@ -33,5 +27,4 @@ public class User {
     @Past(message = "Дата рождения не может быть в будущем.")
     @Valid
     private LocalDate birthday;
-
 }

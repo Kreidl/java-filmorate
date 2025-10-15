@@ -1,37 +1,41 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class User {
+public class UpdateUserRequest {
+    @NotNull(message = "Id не может быть пустым")
     private long id;
 
-    @NotBlank(message = "Email пользователя не может быть пустым.")
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Пользователь ввёл некорректный Email.")
-    @Valid
     private String email;
 
-    @NotBlank(message = "Логин пользователя не может содержать пробелы или быть пустым.")
     @Pattern(regexp = "\\S+", message = "Логин пользователя не может содержать пробелы или быть пустым.")
-    @Valid
     private String login;
 
     private String name;
 
     @Past(message = "Дата рождения не может быть в будущем.")
-    @Valid
     private LocalDate birthday;
 
+    public boolean hasEmail() {
+        return !(email == null || email.isBlank());
+    }
+
+    public boolean hasLogin() {
+        return !(login == null || login.isBlank());
+    }
+
+    public boolean hasName() {
+        return !(name == null || name.isBlank());
+    }
+
+    public boolean hasBirthday() {
+        return !(birthday == null);
+    }
 }

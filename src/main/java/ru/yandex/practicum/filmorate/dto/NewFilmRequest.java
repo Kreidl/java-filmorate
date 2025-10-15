@@ -1,22 +1,15 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class Film {
-    private long id;
-
+public class NewFilmRequest {
     @NotBlank(message = "Название фильма не может быть пустым.")
     private String name;
 
@@ -30,8 +23,9 @@ public class Film {
     @NotNull(message = "Продолжительность фильма не может быть пустой.")
     @Positive(message = "Продолжительность фильма не может быть нулевой или отрицательной.")
     private int duration;
-    private Mpa mpa;
 
-    @NotEmpty(message = "Должен быть указан хотя бы один жанр.")
-    private Set<Genre> genres = new HashSet<>();
+    @NotNull(message = "Mpa-рейтинг фильма не может быть пустым.")
+    private MpaDto mpa;
+
+    private Set<GenreDtoFilm> genres;
 }

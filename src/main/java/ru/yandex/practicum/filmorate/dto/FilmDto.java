@@ -1,21 +1,16 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class Film {
-    private long id;
+public class FilmDto {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
 
     @NotBlank(message = "Название фильма не может быть пустым.")
     private String name;
@@ -29,9 +24,11 @@ public class Film {
 
     @NotNull(message = "Продолжительность фильма не может быть пустой.")
     @Positive(message = "Продолжительность фильма не может быть нулевой или отрицательной.")
-    private int duration;
-    private Mpa mpa;
+    private Integer duration;
+
+    private MpaDto mpa;
 
     @NotEmpty(message = "Должен быть указан хотя бы один жанр.")
-    private Set<Genre> genres = new HashSet<>();
+    private List<GenreDto> genres;
+
 }
